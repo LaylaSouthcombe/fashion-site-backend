@@ -56,7 +56,7 @@ async function deleteProduct (req, res) {
     }
 }
 
-async function searchProducts (req, res) {
+async function queryProducts (req, res) {
     try {
         const query = JSON.parse(req.headers.query)
         const products = await Product.find(query)
@@ -66,4 +66,24 @@ async function searchProducts (req, res) {
     }
 }
 
-module.exports = {showAllProducts, findProductById,createProduct, updateProduct, deleteProduct, searchProducts}
+async function searchProducts (req, res) {
+    try {
+        const searchQuery = req.headers.search_query
+        const products = await Product.aggregate( [{
+            $search: {
+              index: "SearchBarResults",
+              text: {
+                query: searchQuery,
+                path: {
+                  wildcard: "*"
+                }
+              }
+            }
+          }])
+        res.status(200).json(products)
+    } catch(error) {
+        res.status(500).json({message: error.message})
+    }
+}
+
+module.exports = {showAllProducts, findProductById,createProduct, updateProduct, deleteProduct, queryProducts, searchProducts}

@@ -9,6 +9,8 @@ router.delete('/product/:id', productsController.deleteProduct)
 //Site routes
 router.get('/products/', productsController.showAllProducts)
 router.get('/product/:id', productsController.findProductById)
+router.get('/products/query', productsController.queryProducts)
 router.get('/products/search', productsController.searchProducts)
+
 
 module.exports = router
